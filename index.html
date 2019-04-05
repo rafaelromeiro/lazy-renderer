@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <title>lazy-renderer demo</title>
+    </head>
+    <body>
+        <canvas id="renderCanvas" width="512" height="512"></canvas>
+        <script type="module">
+            import {
+                LazyRenderer,
+                ResourceType,
+                ShaderType,
+                PrimitiveType,
+                BufferTarget,
+                BufferDataType,
+                ShaderDataType,
+                TextureFilter,
+                TextureWrapping,
+                TextureType,
+                TextureFormat,
+            } from './dist/lazy-renderer.esm.js';
+
+            // Get the canvas element.
+            const renderCanvas = document.getElementById("renderCanvas");
+
+            // Vertex shader source code.
+            const vertexShaderSource = `#version 300 es
+            precision mediump float;
+
+            uniform float rotationAngle;
+
+            in vec3 vertexPosition;
+            in vec2 vertexTextureCoords;
+            in vec4 vertexColor;
+
+            out vec2 textureCoords;
+            out vec4 color;
+
+            void main() {
+                mat3 rotation = mat3(cos(rotationAngle), -sin(rotationAngle), 0.0,
+                                     sin(rotationAngle),  cos(rotationAngle), 0.0,
+                                                    0.0,                 0.0, 1.0);
+                gl_Position = vec4(rotation * vertexPosition, 1.0);
+                textureCoords = vertexTextureCoords;
+                color = vertexColor;
+            }
+            `;
+
+            // Fragment shader source code.
+            const fragmentShaderSource = `#version 300 es
+            precision mediump float;
+
+            uniform sampler2D diffuseTexture;
+
+            in vec2 textureCoords;
+            in vec4 color;
+
+            layout(location = 0) out vec4 diffuseColor;
+
+            void main() {
+                diffuseColor = color * texture(diffuseTexture, textureCoords);
+            }
+            `;
+
+            // Data allocation.
+            const attributesData = new ArrayBuffer(60);
+            const indicesData = new ArrayBuffer(3);
+            const attributesView = new DataView(attributesData);
+            const indicesView = new DataView(indicesData);
+
+            // UI2_UI10_UI10_UI10_REV Color = (R << 0) + (G << 10) + (B << 20)
+
+            // Vertex 0
+            attributesView.setFloat32( 0, -0.6, true); // X <- stride
+            attributesView.setFloat32( 4,  0.4, true); // Y
+            attributesView.setFloat32( 8,  0.0, true); // Z
+            attributesView.setUint16( 12,     0, true); // U
+            attributesView.setUint16( 14, 65535, true); // V
+            attributesView.setUint32( 16, 1023 <<  0, true); // Red
+
+            // Vertex 1
+            attributesView.setFloat32(20,  0.6, true); // X
+            attributesView.setFloat32(24,  0.4, true); // Y
+            attributesView.setFloat32(28,  0.0, true); // Z
+            attributesView.setUint16( 32, 65535, true); // U
+            attributesView.setUint16( 34, 65535, true); // V
+            attributesView.setUint32( 36, 1023 << 10, true); // Green
+
+            // Vertex 2
+            attributesView.setFloat32(40,  0.0, true); // X <- Positions offset
+            attributesView.setFloat32(44, -0.8, true); // Y
+            attributesView.setFloat32(48,  0.0, true); // Z
+            attributesView.setUint16( 52, 32768, true); // U <- TexCoords offset
+            attributesView.setUint16( 54,     0, true); // V
+            attributesView.setUint32( 56, 1023 << 20, true); // Blue
+
+            // Triangle
+            indicesView.setUint8(0, 0, true);
+            indicesView.setUint8(1, 1, true);
+            indicesView.setUint8(2, 2, true);
+
+            // Setup lazy-renderer.
+            const lazyRenderer = new LazyRenderer(renderCanvas, (resourceType, resourceName) => {
+                if (resourceName === "programs/demo-program") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerProgram(resourceName, ["shaders/demo-vertex", "shaders/demo-fragment"]);
+                }
+
+                if (resourceName === "shaders/demo-vertex") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerShader(resourceName, vertexShaderSource, ShaderType.VERTEX);
+                }
+
+                if (resourceName === "shaders/demo-fragment") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerShader(resourceName, fragmentShaderSource, ShaderType.FRAGMENT);
+                }
+
+                if (resourceName === "primitives/demo-primitive") {
+                    console.log("Registering resource:", resourceName);
+                    const attributes = new Map();
+                    attributes.set("vertexPosition", "accessors/demo-positions");
+                    attributes.set("vertexTextureCoords", "accessors/demo-texture-coords");
+                    attributes.set("vertexColor", "accessors/demo-colors");
+                    lazyRenderer.registerPrimitive(resourceName, 3, attributes, "accessors/demo-indices", PrimitiveType.TRIANGLES);
+                }
+
+                if (resourceName === "accessors/demo-positions") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerAccessor(resourceName, "buffers/demo-attributes", ShaderDataType.SF_3,
+                                                  BufferDataType.SF32, 0, 20, false);
+                }
+
+                if (resourceName === "accessors/demo-texture-coords") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerAccessor(resourceName, "buffers/demo-attributes", ShaderDataType.UI_2,
+                                                  BufferDataType.UI16, 12, 20, true);
+                }
+
+                if (resourceName === "accessors/demo-colors") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerAccessor(resourceName, "buffers/demo-attributes", ShaderDataType.SF_4,
+                                                  BufferDataType.UI2_UI10_UI10_UI10_REV, 16, 20, true);
+                }
+
+                if (resourceName === "accessors/demo-indices") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerAccessor(resourceName, "buffers/demo-indices", ShaderDataType.UI_1,
+                                                  BufferDataType.UI8, 0, 0, false);
+                }
+
+                if (resourceName === "buffers/demo-attributes") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerBuffer(resourceName, attributesView.byteLength, BufferTarget.ATTRIBUTES);
+                    lazyRenderer.writeBufferData(resourceName, attributesView);
+                }
+
+                if (resourceName === "buffers/demo-indices") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerBuffer(resourceName, indicesView.byteLength, BufferTarget.INDICES);
+                    lazyRenderer.writeBufferData(resourceName, indicesView);
+                }
+
+                if (resourceName === "samplers/demo-sampler") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerSampler(resourceName, TextureFilter.LINEAR, TextureFilter.LINEAR_MIPMAP_LINEAR,
+                                                 TextureWrapping.REPEAT, TextureWrapping.REPEAT, TextureWrapping.REPEAT);
+                }
+
+                if (resourceName === "textures/demo-texture") {
+                    console.log("Registering resource:", resourceName);
+                    lazyRenderer.registerTexture(resourceName, 128, 128, 1, TextureType.TEX_2D, TextureFormat.UN_8_8_8_8);
+                    const img = new Image();
+                    img.onload = () => lazyRenderer.writeTextureImage(resourceName, img);
+                    img.src = "./baboon.png"
+                }
+            });
+            console.log("Object lazyRenderer created.");
+
+            // Make lazyRenderer available to console interaction.
+            window.lazyRenderer = lazyRenderer;
+
+            // Setup uniforms.
+            const uniforms = new Map();
+            const rotationAngle = new Float32Array([0.0, 0.0]);
+            uniforms.set("rotationAngle", rotationAngle);
+
+            // Setup textures.
+            const textures = new Map();
+            textures.set("diffuseTexture", { textureName: "textures/demo-texture", samplerName: "samplers/demo-sampler"});
+
+            requestAnimationFrame(drawScene);
+
+            function drawScene(timestamp) {
+                // Update uniforms.
+                rotationAngle[0] = (timestamp * 0.001) % (2 * Math.PI);
+
+                // Clear.
+                lazyRenderer.clear();
+
+                // Render.
+                lazyRenderer.render("programs/demo-program", "primitives/demo-primitive", uniforms, textures);
+
+                // Request next animation frame.
+                requestAnimationFrame(drawScene);
+            }
+        </script>
+    </body>
+</html>

@@ -1,7 +1,7 @@
 {
-  "name": "@brl-seismic-viewer/lazy-renderer",
+  "name": "lazy-renderer",
   "version": "0.0.0",
-  "description": "Lazy loading cached lod WebGL2 wrapper",
+  "description": "Lazy loading cached WebGL2 wrapper",
   "main": "dist/lazy-renderer.cjs.js",
   "module": "dist/lazy-renderer.esm.js",
   "types": "dist/types/index.d.ts",
@@ -17,8 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.ibm.com:Rafael-Oliveira/lazy-renderer.git"
+    "url": "git+https://github.com/rafaelromeiro/lazy-renderer.git"
   },
+  "bugs": {
+    "url": "https://github.com/rafaelromeiro/lazy-renderer/issues"
+  },
+  "homepage": "https://github.com/rafaelromeiro/lazy-renderer#readme",
   "keywords": [
     "lazy",
     "renderer",
@@ -27,9 +31,9 @@
   ],
   "author": {
     "name": "Rafael Oliveira Romeiro",
-    "email": "rafael.oliveira@ibm.com"
+    "email": "rafaelromeiro@gmail.com"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.4.0",

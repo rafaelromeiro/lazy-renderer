@@ -1,5 +1,5 @@
 # lazy-renderer
-Lazy loading cached lod WebGL wrapper.
+Lazy loading cached WebGL wrapper.
 
 ## Demo
 

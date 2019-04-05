@@ -21,18 +21,18 @@ This will create a global reference in your npm installation.
 
 Then, inside your project folder (.../your-project/) you can install this library with:
 ```
-npm link @brl-seismic-viewer/lazy-renderer
+npm link lazy-renderer
 ```
 This will add a symbolic link inside the *node_modules* folder of your project.
 
 To import this library as an ECMAScript module (preferred):
 ```javascript
-import { LazyRenderer } from "@brl-seismic-viewer/lazy-renderer";
+import { LazyRenderer } from "lazy-renderer";
 ```
 
 Alternatively, to import this library as a Node module (when ESM not available):
 ```javascript
-const { LazyRenderer } = require("@brl-seismic-viewer/lazy-renderer");
+const { LazyRenderer } = require("lazy-renderer");
 ```
 
 ## Build

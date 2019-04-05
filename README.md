@@ -5,7 +5,7 @@ Lazy loading cached lod WebGL wrapper.
 
 A demo application is available at:
 
-https://pages.github.ibm.com/Rafael-Oliveira/lazy-renderer/
+https://rafaelromeiro.github.io/lazy-renderer/
 
 This corresponds to the *index.html* file in the root folder of this repository.
 

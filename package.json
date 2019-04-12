@@ -1,6 +1,6 @@
 {
   "name": "lazy-renderer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Lazy loading cached WebGL2 wrapper",
   "main": "dist/lazy-renderer.cjs.js",
   "module": "dist/lazy-renderer.esm.js",
@@ -34,7 +34,7 @@
     "email": "rafaelromeiro@gmail.com"
   },
   "license": "MIT",
-  "private": true,
+  "private": false,
   "devDependencies": {
     "@babel/core": "^7.4.0",
     "@babel/plugin-proposal-class-properties": "^7.4.0",

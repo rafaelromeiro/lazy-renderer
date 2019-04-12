@@ -10,20 +10,11 @@ https://rafaelromeiro.github.io/lazy-renderer/
 This corresponds to the *index.html* file in the root folder of this repository.
 
 ## Installation
-This library is not yet available as a package in a repository.
-For now, you can clone (or download) this library from GitHub and then create a symbolic link.
 
-First, inside the library folder (.../lazy-renderer/) call:
+Install this library with:
 ```
-npm link
+npm install lazy-renderer
 ```
-This will create a global reference in your npm installation.
-
-Then, inside your project folder (.../your-project/) you can install this library with:
-```
-npm link lazy-renderer
-```
-This will add a symbolic link inside the *node_modules* folder of your project.
 
 To import this library as an ECMAScript module (preferred):
 ```javascript
@@ -34,23 +25,6 @@ Alternatively, to import this library as a Node module (when ESM not available):
 ```javascript
 const { LazyRenderer } = require("lazy-renderer");
 ```
-
-## Build
-
-The *dist* folder is already included in the GitHub repository.
-Then, there is no need to build the library to use it.
-Just follow the installation steps above.
-
-If you want to make changes to the library, you need to install the dev dependencies which can be accomplished running inside the library folder (.../lazy-renderer/) the command:
-```
-npm install
-```
-
-Then, to build the library you can call:
-```
-npm run build
-```
-This will typecheck and export types with TypeScript, transpile the code with Babel and create the ESM and CJS modules with Rollup.
 
 ## Usage
 

@@ -1014,9 +1014,9 @@ export class LazyRenderer {
 
     // Texture writing methods. ########################################################################################
 
-    public writeTextureBlob(
+    public writeTextureURI(
         textureName: string,
-        srcBlob: Blob,
+        srcURL: string,
         srcDepth: number = 1,
         textureXOffset?: number,
         textureYOffset?: number,
@@ -1035,19 +1035,15 @@ export class LazyRenderer {
             return;
         }
 
-        // Create a URL representation of the source blob.
-        const blobUrl = URL.createObjectURL(srcBlob);
-
-        // Create an image from the blob URL.
-        new Promise<HTMLImageElement>((resolve, reject) => {
-            const srcImage = new Image();
-            srcImage.onload = () => resolve(srcImage);
-            srcImage.onerror = reject;
-            srcImage.src = blobUrl;
-        }).then(srcImage => {
-            // Image is loaded, release the URL representation.
-            URL.revokeObjectURL(blobUrl);
-
+        // Create an image from the URL.
+        new Promise<HTMLImageElement>(
+            (resolve, reject): void => {
+                const srcImage = new Image();
+                srcImage.onload = (): void => resolve(srcImage);
+                srcImage.onerror = reject;
+                srcImage.src = srcURL;
+            },
+        ).then((srcImage): void => {
             // Write source image into the texture.
             this.writeTextureImage(
                 textureName,
@@ -1252,7 +1248,7 @@ export class LazyRenderer {
         regionHeight?: number,
         regionDepth?: number,
     ): Promise<HTMLImageElement> {
-        const imageURL = this.readTextureURL(
+        const imageURL = this.readTextureURI(
             textureName,
             mimeType,
             dstWidth,
@@ -1269,15 +1265,17 @@ export class LazyRenderer {
             regionDepth,
         );
 
-        return new Promise<HTMLImageElement>((resolve, reject) => {
-            const dstImage = new Image();
-            dstImage.onload = () => resolve(dstImage);
-            dstImage.onerror = reject;
-            dstImage.src = imageURL;
-        });
+        return new Promise<HTMLImageElement>(
+            (resolve, reject): void => {
+                const dstImage = new Image();
+                dstImage.onload = (): void => resolve(dstImage);
+                dstImage.onerror = reject;
+                dstImage.src = imageURL;
+            },
+        );
     }
 
-    public readTextureURL(
+    public readTextureURI(
         textureName: string,
         mimeType?: string,
         dstWidth?: number,

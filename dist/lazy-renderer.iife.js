@@ -2771,8 +2771,8 @@ var LazyRenderer = (function (exports) {
       } // Texture writing methods. ########################################################################################
 
     }, {
-      key: "writeTextureBlob",
-      value: function writeTextureBlob(textureName, srcBlob) {
+      key: "writeTextureURI",
+      value: function writeTextureURI(textureName, srcURL) {
         var _this = this;
 
         var srcDepth = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
@@ -2791,10 +2791,8 @@ var LazyRenderer = (function (exports) {
           // Unkown texture name.
           this.requestResource(exports.ResourceType.TEXTURE, textureName);
           return;
-        } // Create a URL representation of the source blob.
+        } // Create an image from the URL.
 
-
-        var blobUrl = URL.createObjectURL(srcBlob); // Create an image from the blob URL.
 
         new Promise(function (resolve, reject) {
           var srcImage = new Image();
@@ -2804,11 +2802,9 @@ var LazyRenderer = (function (exports) {
           };
 
           srcImage.onerror = reject;
-          srcImage.src = blobUrl;
+          srcImage.src = srcURL;
         }).then(function (srcImage) {
-          // Image is loaded, release the URL representation.
-          URL.revokeObjectURL(blobUrl); // Write source image into the texture.
-
+          // Write source image into the texture.
           _this.writeTextureImage(textureName, srcImage, srcDepth, textureXOffset, textureYOffset, textureZOffset, srcXOffset, srcYOffset, srcZOffset, regionWidth, regionHeight, regionDepth);
         }, console.error);
       }
@@ -2967,7 +2963,7 @@ var LazyRenderer = (function (exports) {
     }, {
       key: "readTextureImage",
       value: function readTextureImage(textureName, mimeType, dstWidth, dstHeight, dstDepth, textureXOffset, textureYOffset, textureZOffset, dstXOffset, dstYOffset, dstZOffset, regionWidth, regionHeight, regionDepth) {
-        var imageURL = this.readTextureURL(textureName, mimeType, dstWidth, dstHeight, dstDepth, textureXOffset, textureYOffset, textureZOffset, dstXOffset, dstYOffset, dstZOffset, regionWidth, regionHeight, regionDepth);
+        var imageURL = this.readTextureURI(textureName, mimeType, dstWidth, dstHeight, dstDepth, textureXOffset, textureYOffset, textureZOffset, dstXOffset, dstYOffset, dstZOffset, regionWidth, regionHeight, regionDepth);
         return new Promise(function (resolve, reject) {
           var dstImage = new Image();
 
@@ -2980,8 +2976,8 @@ var LazyRenderer = (function (exports) {
         });
       }
     }, {
-      key: "readTextureURL",
-      value: function readTextureURL(textureName, mimeType, dstWidth, dstHeight, dstDepth, textureXOffset, textureYOffset, textureZOffset, dstXOffset, dstYOffset, dstZOffset, regionWidth, regionHeight, regionDepth) {
+      key: "readTextureURI",
+      value: function readTextureURI(textureName, mimeType, dstWidth, dstHeight, dstDepth, textureXOffset, textureYOffset, textureZOffset, dstXOffset, dstYOffset, dstZOffset, regionWidth, regionHeight, regionDepth) {
         var texture = this.textures.get(textureName);
 
         if (texture === undefined) {

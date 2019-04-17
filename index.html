@@ -7,6 +7,11 @@
     </head>
     <body>
         <canvas id="renderCanvas" width="512" height="512"></canvas>
+        <!-- Import baboon image URI -->
+        <script> module = {}</script>
+        <script src="https://cdn.jsdelivr.net/npm/baboon-image-uri@1.0.1/baboon.js"></script>
+        <script> baboon = module.exports</script>
+        <!-- lazy-renderer demo -->
         <script type="module">
             import {
                 LazyRenderer,
@@ -73,15 +78,15 @@
             // UI2_UI10_UI10_UI10_REV Color = (R << 0) + (G << 10) + (B << 20)
 
             // Vertex 0
-            attributesView.setFloat32( 0, -0.6, true); // X <- stride
+            attributesView.setFloat32( 0, -0.6, true); // X <- Positions offset
             attributesView.setFloat32( 4,  0.4, true); // Y
             attributesView.setFloat32( 8,  0.0, true); // Z
-            attributesView.setUint16( 12,     0, true); // U
+            attributesView.setUint16( 12,     0, true); // U <- TexCoords offset
             attributesView.setUint16( 14, 65535, true); // V
             attributesView.setUint32( 16, 1023 <<  0, true); // Red
 
             // Vertex 1
-            attributesView.setFloat32(20,  0.6, true); // X
+            attributesView.setFloat32(20,  0.6, true); // X <- stride
             attributesView.setFloat32(24,  0.4, true); // Y
             attributesView.setFloat32(28,  0.0, true); // Z
             attributesView.setUint16( 32, 65535, true); // U
@@ -89,10 +94,10 @@
             attributesView.setUint32( 36, 1023 << 10, true); // Green
 
             // Vertex 2
-            attributesView.setFloat32(40,  0.0, true); // X <- Positions offset
+            attributesView.setFloat32(40,  0.0, true); // X
             attributesView.setFloat32(44, -0.8, true); // Y
             attributesView.setFloat32(48,  0.0, true); // Z
-            attributesView.setUint16( 52, 32768, true); // U <- TexCoords offset
+            attributesView.setUint16( 52, 32768, true); // U
             attributesView.setUint16( 54,     0, true); // V
             attributesView.setUint32( 56, 1023 << 20, true); // Blue
 
@@ -172,9 +177,7 @@
                 if (resourceName === "textures/demo-texture") {
                     console.log("Registering resource:", resourceName);
                     lazyRenderer.registerTexture(resourceName, 128, 128, 1, TextureType.TEX_2D, TextureFormat.UN_8_8_8_8);
-                    const img = new Image();
-                    img.onload = () => lazyRenderer.writeTextureImage(resourceName, img);
-                    img.src = "./baboon.png"
+                    lazyRenderer.writeTextureURI(resourceName, window.baboon);
                 }
             });
             console.log("Object lazyRenderer created.");

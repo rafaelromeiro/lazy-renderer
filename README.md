@@ -18,12 +18,59 @@ npm install lazy-renderer
 
 To import this library as an ECMAScript module (preferred):
 ```javascript
-import { LazyRenderer } from "lazy-renderer";
+import {
+    LazyRenderer,
+    ResourceType,
+    ShaderType,
+    PrimitiveType,
+    BufferTarget,
+    BufferDataType,
+    ShaderDataType,
+    TextureFilter,
+    TextureWrapping,
+    TextureType,
+    TextureFormat,
+} from "lazy-renderer";
 ```
 
 Alternatively, to import this library as a Node module (when ESM not available):
 ```javascript
-const { LazyRenderer } = require("lazy-renderer");
+const {
+    LazyRenderer,
+    ResourceType,
+    ShaderType,
+    PrimitiveType,
+    BufferTarget,
+    BufferDataType,
+    ShaderDataType,
+    TextureFilter,
+    TextureWrapping,
+    TextureType,
+    TextureFormat,
+} = require("lazy-renderer");
+```
+
+## Browser
+
+To use this library in a browser through IIFE:
+```html
+<script src="https://cdn.jsdelivr.net/npm/lazy-renderer/dist/lazy-renderer.iife.min.js"></script>
+<script>
+    const {
+        LazyRenderer,
+        ResourceType,
+        ShaderType,
+        PrimitiveType,
+        BufferTarget,
+        BufferDataType,
+        ShaderDataType,
+        TextureFilter,
+        TextureWrapping,
+        TextureType,
+        TextureFormat,
+    } = window.LazyRenderer;
+    // ...
+</script>
 ```
 
 ## Usage
@@ -68,11 +115,11 @@ The *textures* (*Map<string, { textureName: string, samplerName: string}>*) maps
 Finally, buffers and textures can be written or read through the methods:
 * *writeBufferData*, that writes into the buffer from an *ArrayBufferView*.
 * *readBufferData*, that reads the buffer contents to an *ArrayBufferView*.
-* *writeTextureBlob*, that writes into the texture from an image *Blob*.
+* *writeTextureURI*, that writes into the texture from an image URI.
+* *readTextureURI*, that reads the texture contents to an image URI.
 * *writeTextureImage*, that writes into the texture from an *HTMLImageElement*.
-* *writeTextureData*, that writes into the texture from an *ArrayBufferView*.
 * *readTextureImage*, that reads the texture contents to an *HTMLImageElement*.
-* *readTextureURL*, that reads the texture contents to an image data URL.
+* *writeTextureData*, that writes into the texture from an *ArrayBufferView*.
 * *readTextureData*, that reads the texture contents to an *ArrayBufferView*.
 
 ## Documentation

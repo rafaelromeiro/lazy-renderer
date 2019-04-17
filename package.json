@@ -1,6 +1,6 @@
 {
   "name": "lazy-renderer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lazy loading cached WebGL2 wrapper",
   "main": "dist/lazy-renderer.cjs.js",
   "module": "dist/lazy-renderer.esm.js",

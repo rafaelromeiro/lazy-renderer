@@ -11,9 +11,11 @@
         <script> module = {}</script>
         <script src="https://cdn.jsdelivr.net/npm/baboon-image-uri@1.0.1/baboon.js"></script>
         <script> baboon = module.exports</script>
-        <!-- lazy-renderer demo -->
-        <script type="module">
-            import {
+        <!-- Import lazy-renderer -->
+        <script src="./dist/lazy-renderer.iife.js"></script>
+        <!-- Demo script -->
+        <script>
+            var {
                 LazyRenderer,
                 ResourceType,
                 ShaderType,
@@ -25,7 +27,7 @@
                 TextureWrapping,
                 TextureType,
                 TextureFormat,
-            } from './dist/lazy-renderer.esm.js';
+            } = window.LazyRenderer;
 
             // Get the canvas element.
             const renderCanvas = document.getElementById("renderCanvas");
@@ -180,14 +182,10 @@
                     lazyRenderer.writeTextureURI(resourceName, window.baboon);
                 }
             });
-            console.log("Object lazyRenderer created.");
-
-            // Make lazyRenderer available to console interaction.
-            window.lazyRenderer = lazyRenderer;
 
             // Setup uniforms.
             const uniforms = new Map();
-            const rotationAngle = new Float32Array([0.0, 0.0]);
+            const rotationAngle = new Float32Array([0.0]);
             uniforms.set("rotationAngle", rotationAngle);
 
             // Setup textures.

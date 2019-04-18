@@ -56,7 +56,7 @@ To use this library in a browser through IIFE:
 ```html
 <script src="https://cdn.jsdelivr.net/npm/lazy-renderer/dist/lazy-renderer.iife.min.js"></script>
 <script>
-    const {
+    var {
         LazyRenderer,
         ResourceType,
         ShaderType,

@@ -1016,8 +1016,8 @@ export class LazyRenderer {
 
     public writeTextureURI(
         textureName: string,
-        srcURL: string,
-        srcDepth: number = 1,
+        srcURI: string,
+        srcDepth?: number,
         textureXOffset?: number,
         textureYOffset?: number,
         textureZOffset?: number,
@@ -1041,7 +1041,7 @@ export class LazyRenderer {
                 const srcImage = new Image();
                 srcImage.onload = (): void => resolve(srcImage);
                 srcImage.onerror = reject;
-                srcImage.src = srcURL;
+                srcImage.src = srcURI;
             },
         ).then((srcImage): void => {
             // Write source image into the texture.
@@ -1248,7 +1248,7 @@ export class LazyRenderer {
         regionHeight?: number,
         regionDepth?: number,
     ): Promise<HTMLImageElement> {
-        const imageURL = this.readTextureURI(
+        const imageURI = this.readTextureURI(
             textureName,
             mimeType,
             dstWidth,
@@ -1270,7 +1270,7 @@ export class LazyRenderer {
                 const dstImage = new Image();
                 dstImage.onload = (): void => resolve(dstImage);
                 dstImage.onerror = reject;
-                dstImage.src = imageURL;
+                dstImage.src = imageURI;
             },
         );
     }
